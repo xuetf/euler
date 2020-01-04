@@ -73,7 +73,7 @@ CompactNode::SampleNeighbor(
       }
       int32_t pre_idx = edge_type == 0 ? 0 :
                         neighbor_groups_idx_[edge_type - 1];
-      int32_t cur_idx = neighbor_groups_idx_[edge_type] - 1;
+      int32_t cur_idx = neighbor_groups_idx_[edge_type];
       if (cur_idx <= pre_idx) {
         return empty_vec;
       }
@@ -191,14 +191,13 @@ CompactNode::GetTopKNeighbor(const std::vector<int32_t>& edge_types,
                           neighbor_groups_idx_[edge_type - 1];
       for (int32_t j = begin_idx; j <
            neighbor_groups_idx_[edge_type]; ++j) {
+        float pre = j == 0 ? 0 : neighbors_weight_[j - 1];
         if (static_cast<int32_t>(min_heap.size()) < k) {
-          float pre = j == 0 ? 0 : neighbors_weight_[j - 1];
           min_heap.push(euler::common::IDWeightPair(neighbors_[j],
                                                     neighbors_weight_[j] - pre,
                                                     edge_type));
         } else {
-          if (std::get<1>(min_heap.top()) < neighbors_weight_[j]) {
-            float pre = j == 0 ? 0 : neighbors_weight_[j - 1];
+          if (std::get<1>(min_heap.top()) < neighbors_weight_[j] - pre) {
             min_heap.pop();
             min_heap.push(euler::common::IDWeightPair(neighbors_[j],
                                                       neighbors_weight_[j] - pre,
