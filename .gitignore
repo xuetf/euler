@@ -6,3 +6,4 @@
 build/
 ckpt/
 dist/
+.idea/
